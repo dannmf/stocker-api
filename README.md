@@ -10,8 +10,10 @@ O backend foi desenvolvido utilizando tecnologias modernas como Node.js, TypeScr
 
 ## Equipe
 
-**Instrutor:**
+**Instrutores:**
+- Celso Giusti
 - Daniel Manoel
+- Marlon Fanger
 
 **Alunos:**
 - Jimmy
