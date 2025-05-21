@@ -1,6 +1,7 @@
 
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import { userRoutes } from './routes/user_routes'
 const app = Fastify({ logger: true })
 
 app.register(cors, {
@@ -8,6 +9,8 @@ app.register(cors, {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 })
+
+app.register(userRoutes)
 
 
 const start = async() => {
