@@ -16,11 +16,11 @@ O backend foi desenvolvido utilizando tecnologias modernas como Node.js, TypeScr
 - Marlon Fanger
 
 **Alunos:**
+- Augusto Senna
 - Jimmy
 - Lívia Clemente
 - Miguel Zacharias
 - Marcela
-- Augusto Senna
 
 ## Tecnologias Utilizadas
 
