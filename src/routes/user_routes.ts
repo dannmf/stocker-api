@@ -10,6 +10,8 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.get('/user/:id', usersController.findById)
   
   fastify.put('/user/:id', usersController.update)
+
+  fastify.put('/user/password/:id', usersController.updatePassword)
   
   fastify.delete('/user/:id', usersController.delete)
 }
