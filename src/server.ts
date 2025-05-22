@@ -2,6 +2,7 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { userRoutes } from './routes/user_routes'
+import { productRoutes } from './routes/product_routes'
 const app = Fastify({ logger: true })
 
 app.register(cors, {
@@ -11,6 +12,7 @@ app.register(cors, {
 })
 
 app.register(userRoutes)
+app.register(productRoutes)
 
 
 const start = async() => {
