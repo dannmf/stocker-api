@@ -1,7 +1,7 @@
 import { compare, hash } from "bcryptjs"
 import { prisma } from "../lib/prisma"
 
-export class UsersService {
+export class UserService {
     async createUser(data: {
         name: string,
         email: string,

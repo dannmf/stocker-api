@@ -13,7 +13,7 @@ CREATE TABLE "Product" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
+    "category" TEXT NOT NULL COLLATE NOCASE,
     "price" REAL NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
     "imageUrl" TEXT,
