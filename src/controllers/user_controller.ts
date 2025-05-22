@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { UsersService } from "../services/user_service";
+import { UserService } from "../services/user_service";
 import { z, ZodSafeParseError, ZodSafeParseResult, } from "zod/v4"
+import { formatError } from "../utils/errors/formatZodErrors";
 
-const usersService = new UsersService();
+const userService = new UserService();
 
 
 //Schemas com zod para tipagem e validação dos dados
@@ -40,9 +41,7 @@ type CreateUserBody = z.infer<typeof createUserBodySchema>
 type UpdateUserBody = z.infer<typeof updateUserSchema>
 type UpdatePasswordBody = z.infer<typeof updateUserPasswordSchema>
 
-function formatError(result: ZodSafeParseError<any>) {
-    return z.prettifyError(result.error)
-}
+
 
 export const usersController = {
     async create(request: FastifyRequest<{ Body: CreateUserBody }>, reply: FastifyReply) {
@@ -55,7 +54,7 @@ export const usersController = {
                     errors: formatError(result)
                 });
             }
-            const user = await usersService.createUser(result.data);
+            const user = await userService.createUser(result.data);
             return reply.status(201).send(user);
 
         } catch (error) {
@@ -68,7 +67,7 @@ export const usersController = {
 
     async findAll(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const users = await usersService.findAll();
+            const users = await userService.findAll();
             return reply.status(200).send(users);
         } catch (error) {
             if (error instanceof Error) {
@@ -88,7 +87,7 @@ export const usersController = {
                 });
             }
             const userId = result.data.id
-            const user = await usersService.findById(userId);
+            const user = await userService.findById(userId);
 
             return reply.status(200).send(user);
 
@@ -122,7 +121,7 @@ export const usersController = {
             const userId = paramsResult.data.id;
             const data = bodyResult.data
 
-            const user = await usersService.update(userId, data);
+            const user = await userService.update(userId, data);
             return reply.send(user);
 
         } catch (error) {
@@ -155,7 +154,7 @@ export const usersController = {
             const userId = paramsResult.data.id
             const data = bodyResult.data
 
-            const user = await usersService.updatePassword(userId, data)
+            const user = await userService.updatePassword(userId, data)
 
             return reply.send(user)
 
@@ -179,7 +178,7 @@ export const usersController = {
                 })
             }
             const userId = result.data.id
-            await usersService.delete(userId);
+            await userService.delete(userId);
             return reply.status(204).send();
         } catch (error) {
             if (error instanceof Error) {
