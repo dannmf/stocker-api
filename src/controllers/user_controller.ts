@@ -23,8 +23,8 @@ const createUserBodySchema = z.object({
 })
 
 const updateUserSchema = z.object({
-    name: z.string().min(1, "O nome é obrigatório"),
-    email: z.email(),
+    name: z.string().min(1, "O nome é obrigatório").optional(),
+    email: z.email().optional(),
 }).refine(data => Object.keys(data).length > 0, {
     message: "Pelo menos um campo deve ser fornecido para atualização"
 })
