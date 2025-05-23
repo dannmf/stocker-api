@@ -188,7 +188,7 @@ export const productController = {
         const productId = paramsResult.data.id
         const data = bodyResult.data
 
-        const product = productService.updateProduct(productId, data)
+        const product = await productService.updateProduct(productId, data)
 
         return reply.status(200).send(product)
     },
