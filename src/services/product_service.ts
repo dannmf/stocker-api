@@ -134,7 +134,7 @@ export class ProductService {
             }
 
         })
-    
+
         if (category.length === 0) {
             throw new Error('Nenhum produto foi encontrado nessa categoria')
         }
@@ -151,12 +151,15 @@ export class ProductService {
         imageUrl?: string,
     }) {
         const productId = await prisma.product.findUnique({
-            where: { id }
+            where: { id },
+
         })
 
         if (!productId) {
             throw new Error("Produto não encontrado")
         }
+
+        
 
         const product = await prisma.product.update({
             where: { id },
@@ -168,7 +171,7 @@ export class ProductService {
                 category: data.category,
                 imageUrl: data.imageUrl
             },
-            select: {
+             select: {
                 id: true,
                 name: true,
                 description: true,
