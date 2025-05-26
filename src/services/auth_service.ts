@@ -1,6 +1,8 @@
-import { signToken } from "../lib/jwt";
+import { signResetToken, signToken } from "../lib/jwt";
+import jwt from 'jsonwebtoken'
 import { prisma } from "../lib/prisma";
 import bcrypt from 'bcryptjs'
+import { sendResetEmail } from "../lib/mailer";
 
 export class AuthService {
     async login(data: { email: string, password: string }) {
@@ -32,5 +34,35 @@ export class AuthService {
             }
         })
         return { message: 'Logout realizado com sucesso' }
+    }
+
+    async forgotPassword(email: string) {
+        const userEmail = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+
+        if (!userEmail) return
+
+        const token = signResetToken(email);
+
+        await sendResetEmail(email, token);
+
+    }
+
+    async resetPassword(token: string, newPassword: string) {
+        try {
+            const { email } = jwt.verify(token, process.env.JWT_SECRET!) as { email: string }
+            const hashed = await bcrypt.hash(newPassword, 10);
+
+            await prisma.user.update({
+                where: { email },
+                data: { password: hashed }
+            })
+        } catch (error) {
+            throw new Error ('Token inválido ou expirado')
+         }
+
     }
 }

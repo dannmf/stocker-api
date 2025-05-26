@@ -5,6 +5,10 @@ import { authenticate } from "../middlewares/authenticate";
 export async function authRoutes(fastify: FastifyInstance) {
     // Rota de login deve ser pública
     fastify.post('/login', authController.login)
+
+    fastify.post('/forgot-password', authController.forgotPassword)
+
+    fastify.post('/reset-password', authController.resetPassword)
     
     // Rota de logout precisa de autenticação
     fastify.post('/logout', {

@@ -10,6 +10,10 @@ export function signToken(payload: object): string {
   })
 }
 
+export function signResetToken(email:string){
+  return jwt.sign({email}, JWT_SECRET, {expiresIn: '15m'})
+}
+
 export function verifyToken(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET)
