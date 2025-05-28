@@ -5,7 +5,9 @@ export class UserService {
     async createUser(data: {
         name: string,
         email: string,
-        password: string
+        password: string,
+        imageUrl?: string
+
     }) {
         const existingUser = await prisma.user.findUnique({
             where: {
@@ -23,6 +25,7 @@ export class UserService {
             data: {
                 name: data.name,
                 email: data.email,
+                imageUrl: data.imageUrl,
                 password: hashedPassword
             },
 
@@ -30,6 +33,7 @@ export class UserService {
                 id: true,
                 name: true,
                 email: true,
+                imageUrl: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -42,6 +46,7 @@ export class UserService {
                 id: true,
                 name: true,
                 email: true,
+                imageUrl: true,
                 password: false
             },
             orderBy: {
@@ -61,6 +66,7 @@ export class UserService {
                 id: true,
                 name: true,
                 email: true,
+                imageUrl: true,
                 password: false
             }
         })
@@ -95,6 +101,7 @@ export class UserService {
     async update(id: number, data: {
         name?: string
         email?: string
+        imageUrl?: string
     }) {
         const user = await prisma.user.update({
             where: {
@@ -103,6 +110,7 @@ export class UserService {
             data: {
                 name: data.name,
                 email: data.email,
+                imageUrl: data.imageUrl,
             }
         })
 

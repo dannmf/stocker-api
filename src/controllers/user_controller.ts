@@ -6,7 +6,6 @@ import { formatError } from "../utils/errors/formatZodErrors";
 const userService = new UserService();
 
 
-//Schemas com zod para tipagem e validação dos dados
 const paramsWithIdSchema = z.object({
     id: z.string().transform((value) => {
         const parsedId = parseInt(value);
@@ -20,12 +19,14 @@ const paramsWithIdSchema = z.object({
 const createUserBodySchema = z.object({
     name: z.string().min(1, "O nome é obrigatório"),
     email: z.email(),
+    imageUrl: z.string().optional(),
     password: z.string().min(6, "A senha deve conter no mínimo 6 caracteres")
 })
 
 const updateUserSchema = z.object({
     name: z.string().min(1, "O nome é obrigatório").optional(),
     email: z.email().optional(),
+    imageUrl: z.string().optional(),
 }).refine(data => Object.keys(data).length > 0, {
     message: "Pelo menos um campo deve ser fornecido para atualização"
 })

@@ -2,9 +2,6 @@ import { ZodNumberFormat } from "zod/v4"
 import { prisma } from "../lib/prisma"
 
 export class ProductService {
-    getAllProducts() {
-        throw new Error("Method not implemented.")
-    }
     async createProduct(data: {
         name: string,
         description: string,
