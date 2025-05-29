@@ -1,8 +1,8 @@
-import { signResetToken, signToken } from "../lib/jwt";
 import jwt from 'jsonwebtoken'
-import { prisma } from "../lib/prisma";
 import bcrypt from 'bcryptjs'
-import { sendResetEmail } from "../lib/mailer";
+import { prisma } from '../../shared/lib/prisma'
+import { signResetToken, signToken } from '../../shared/lib/jwt'
+import { sendResetEmail } from '../../shared/lib/mailer'
 
 export class AuthService {
     async login(data: { email: string, password: string }) {

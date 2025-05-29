@@ -1,5 +1,4 @@
-import { ZodNumberFormat } from "zod/v4"
-import { prisma } from "../lib/prisma"
+import { prisma } from "../../shared/lib/prisma"
 
 export class ProductService {
     async createProduct(data: {

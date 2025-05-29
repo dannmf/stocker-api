@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { authController } from "../controllers/auth_controller";
-import { authenticate } from "../middlewares/authenticate";
+import { authController } from "./auth_controller";
+import { authenticate } from "../../shared/middlewares/authenticate";
 
 export async function authRoutes(fastify: FastifyInstance) {
     // Rota de login deve ser pública

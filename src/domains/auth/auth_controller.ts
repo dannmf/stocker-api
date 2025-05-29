@@ -1,28 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { AuthService } from "../services/auth_service";
-import z from "zod/v4";
-import { formatError } from "../utils/errors/formatZodErrors";
+import { formatError } from "../../shared/utils/errors/formatZodErrors";
+import { AuthService } from "./auth_service";
+import { authBodySchema, ForgotPasswordBody, forgotPasswordSchema, LoginBody, ResetPasswordBody, resetPasswordSchema } from "./auth_schema";
 
 const authService = new AuthService()
 
-const authBodySchema = z.object({
-    email: z.email(),
-    password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres")
-})
 
-const forgotPasswordSchema = z.object({
-    email: z.email(),
-})
-
-const resetPasswordSchema = z.object({
-    token: z.string().min(1),
-    newPassword: z.string().min(6)
-})
-
-export type ForgotPasswordBody = z.infer<typeof forgotPasswordSchema>
-export type ResetPasswordBody = z.infer<typeof resetPasswordSchema>
-
-type LoginBody = z.infer<typeof authBodySchema>
 
 export const authController = {
     async login(request: FastifyRequest<{ Body: LoginBody }>, reply: FastifyReply) {

@@ -1,5 +1,5 @@
 import { compare, hash } from "bcryptjs"
-import { prisma } from "../lib/prisma"
+import { prisma } from "../../shared/lib/prisma"
 
 export class UserService {
     async createUser(data: {
