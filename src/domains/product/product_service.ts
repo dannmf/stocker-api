@@ -115,7 +115,8 @@ export class ProductService {
         const products = await prisma.product.findMany({
             where: {
                 category: {
-                    contains: category
+                    contains: category,
+                    mode: 'insensitive' 
                 }
             },
 
