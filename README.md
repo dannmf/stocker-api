@@ -89,12 +89,14 @@ mundo-senai-api/
 
 ## Como Executar
 
+### Configuração Padrão (Supabase)
+
 1. Clone o repositório
 2. Instale as dependências:
    ```
    npm install
    ```
-3. Configure o arquivo `.env` com as variáveis de ambiente necessárias
+3. Configure o arquivo `.env` com as credenciais do Supabase
 4. Execute as migrações do banco de dados:
    ```
    npx prisma migrate dev
@@ -103,7 +105,32 @@ mundo-senai-api/
    ```
    npm run dev
    ```
-6. O servidor estará disponível em `http://localhost:3000`
+
+### Configuração Local com Docker (para uso na rede da escola)
+
+1. Clone o repositório
+2. Instale as dependências:
+   ```
+   npm install
+   ```
+3. Inicie o container Docker do PostgreSQL:
+   ```
+   npm run docker:up
+   ```
+4. Aplique as configurações locais e inicie o servidor:
+   ```
+   npm run dev:local
+   ```
+5. Para alternar de volta para o Supabase:
+   ```
+   npm run dev:supabase
+   ```
+6. Para parar o container Docker:
+   ```
+   npm run docker:down
+   ```
+
+7. O servidor estará disponível em `http://localhost:3000`
 
 
 Desenvolvido para o evento Mundo SENAI - Junho 2025
