@@ -53,9 +53,6 @@ mundo-senai-api/
 │   │   ├── types/           # Definições de tipos
 │   │   └── utils/           # Funções utilitárias
 │   └── server.ts            # Ponto de entrada da aplicação
-├── .env                     # Variáveis de ambiente (produção)
-├── .env.local               # Variáveis para ambiente local
-├── .env.supabase            # Variáveis para ambiente Supabase
 ├── docker-compose.yml       # Configuração do Docker para PostgreSQL local
 ├── package.json             # Dependências e scripts
 └── tsconfig.json            # Configuração do TypeScript
