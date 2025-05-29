@@ -145,7 +145,7 @@ O projeto suporta múltiplos ambientes de desenvolvimento:
    npm run dev
    ```
 
-### Configuração Local com Docker (para uso na rede da escola)
+### Configuração Local com Docker 
 
 1. Clone o repositório
 2. Instale as dependências:
