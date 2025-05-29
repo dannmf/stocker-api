@@ -22,6 +22,7 @@
   "dependencies": {
     "@fastify/cors": "^11.0.1",
     "@fastify/jwt": "^9.1.0",
+    "@prisma/adapter-pg": "^6.8.2",
     "@prisma/client": "^6.8.2",
     "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
