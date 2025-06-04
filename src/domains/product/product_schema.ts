@@ -20,7 +20,7 @@ const createProductBodySchema = z.object({
     price: z.number().positive("O preço deve ser um número positivo"),
     stock: z.number().int().nonnegative("O estoque deve ser um número inteiro não negativo"),
     category: z.string().transform(val => val.trim() === '' ? 'Sem Categoria' : val).optional().default('Sem Categoria'),
-    imageUrl: z.string().optional()
+    imageUrl: z.string().optional().default('')
 })
 
 const updateProductBodySchema = z.object({
