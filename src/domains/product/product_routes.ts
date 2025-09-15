@@ -33,6 +33,20 @@ export async function productRoutes(fastify: FastifyInstance) {
         handler: productController.getByCategory
     })
 
+    fastify.get('/product/period/:startDate/:endDate', {
+        preHandler: authenticate,
+        handler: productController.getByPeriod
+    })
+
+    fastify.post('/product/addStock/:id', {
+        preHandler: authenticate,
+        handler: productController.addProductStock
+    })
+    fastify.post('/product/removeStock/:id', {
+        preHandler: authenticate,
+        handler: productController.removeProductStock
+    })
+
     fastify.put('/product/:id', {
         preHandler: authenticate,
         handler: productController.update

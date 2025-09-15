@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "StockMovementType" AS ENUM ('IN', 'OUT');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -27,6 +30,18 @@ CREATE TABLE "Product" (
 );
 
 -- CreateTable
+CREATE TABLE "StockMovement" (
+    "id" SERIAL NOT NULL,
+    "productId" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "type" "StockMovementType" NOT NULL,
+    "user" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "StockMovement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "InvalidToken" (
     "id" SERIAL NOT NULL,
     "token" TEXT NOT NULL,
@@ -44,3 +59,6 @@ CREATE UNIQUE INDEX "Product_name_key" ON "Product"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "InvalidToken_token_key" ON "InvalidToken"("token");
+
+-- AddForeignKey
+ALTER TABLE "StockMovement" ADD CONSTRAINT "StockMovement_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
