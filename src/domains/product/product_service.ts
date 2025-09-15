@@ -111,12 +111,70 @@ export class ProductService {
         return products
     }
 
+    async addStock(id: number, quantity: number, user?: string) {
+
+        const product = await prisma.product.findUnique({
+            where: { id }
+        })
+
+        if (!product) {
+            throw new Error("Produto não encontrado")
+        }
+        await prisma.stockMovement.create({
+            data: {
+                productId: id,
+                quantity,
+                type: 'IN',
+                user
+            }
+
+
+        })
+        return await prisma.product.update({
+            where: { id },
+            data: {
+                stock: product.stock + quantity
+            }
+        })
+    }
+
+    async removeStock(id: number, quantity: number, user?: string) {
+
+        const product = await prisma.product.findUnique({
+            where: { id }
+        })
+
+        if (!product) {
+            throw new Error("Produto não encontrado")
+        }
+
+        if (product.stock < quantity) {
+            throw new Error("Estoque insuficiente")
+        }
+        await prisma.stockMovement.create({
+            data: {
+                productId: id,
+                quantity,
+                type: 'OUT',
+                user
+            }
+
+
+        })
+        return await prisma.product.update({
+            where: { id },
+            data: {
+                stock: product.stock - quantity
+            }
+        })
+    }
+
     async findByCategory(category: string) {
         const products = await prisma.product.findMany({
             where: {
                 category: {
                     contains: category,
-                    mode: 'insensitive' 
+                    mode: 'insensitive'
                 }
             },
 
@@ -139,6 +197,18 @@ export class ProductService {
         return products
     }
 
+    async findByPeriod(startDate: Date, endDate: Date) {
+        const products = await prisma.product.findMany({
+            where: {
+                createdAt: {
+                    gte: startDate,
+                    lte: endDate
+                }
+            }
+        })
+        return products
+    }
+
     async updateProduct(id: number, data: {
         name?: string,
         description?: string,
@@ -156,7 +226,7 @@ export class ProductService {
             throw new Error("Produto não encontrado")
         }
 
-        
+
 
         const product = await prisma.product.update({
             where: { id },
@@ -168,7 +238,7 @@ export class ProductService {
                 category: data.category,
                 imageUrl: data.imageUrl
             },
-             select: {
+            select: {
                 id: true,
                 name: true,
                 description: true,

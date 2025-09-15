@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -22,15 +22,32 @@ model User {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
   description String
   category    String
   price       Float
-  stock       Int      @default(0)
+  stock       Int             @default(0)
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  movements   StockMovement[]
+}
+
+model StockMovement {
+  id        Int               @id @default(autoincrement())
+  productId Int
+  quantity  Int
+  type      StockMovementType
+  user      String?
+  createdAt DateTime          @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
+enum StockMovementType {
+  IN
+  OUT
 }
 
 model InvalidToken {
