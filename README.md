@@ -1,43 +1,36 @@
-# Mundo SENAI API
+Stocker API
+API RESTful para controle de estoque e gerenciamento de produtos, desenvolvida com Node.js, TypeScript e tecnologias modernas.
+Sobre o Projeto
+Stocker API é uma solução completa para gerenciamento de estoque e produtos, oferecendo funcionalidades essenciais como cadastro de usuários, autenticação segura, controle de produtos e movimentações de estoque (entrada e saída).
+A API foi desenvolvida com foco em performance, segurança e escalabilidade, utilizando as melhores práticas de desenvolvimento.
+Desenvolvedor
+Daniel Manoel - @dannmf
+Tecnologias Utilizadas
 
-Backend API para o projeto de Dashboard apresentado no evento Mundo SENAI em 5 de junho de 2025.
+Node.js: Ambiente de execução JavaScript
+TypeScript: Superset tipado de JavaScript
+Fastify: Framework web rápido e de baixo overhead
+Prisma: ORM (Object-Relational Mapping) para acesso ao banco de dados
+PostgreSQL: Banco de dados relacional
+JWT: Autenticação baseada em tokens
+bcryptjs: Biblioteca para hash de senhas
+Zod: Biblioteca para validação de dados
+Nodemailer: Biblioteca para envio de emails (recuperação de senha)
 
-## Sobre o Projeto
+Funcionalidades
 
-Este projeto é o backend de uma aplicação desenvolvida pelos alunos do segundo ano do curso técnico de Desenvolvimento de Sistemas do SENAI. A aplicação consiste em uma dashboard que permite o cadastro de produtos e usuários com sistema de autenticação.
+✅ Autenticação de usuários com JWT
+✅ Cadastro e gerenciamento de usuários
+✅ CRUD completo de produtos
+✅ Controle de estoque (entrada e saída)
+✅ Consulta de produtos com estoque baixo
+✅ Filtros por categoria
+✅ Recuperação de senha via email
+✅ Sistema de logout seguro
+✅ Validação de dados com Zod
 
-O backend foi desenvolvido utilizando tecnologias modernas como Node.js, TypeScript, Fastify e Prisma ORM, fornecendo uma API RESTful para o frontend da aplicação.
-
-## Equipe
-
-**Instrutores:**
-- Celso Giusti
-- Daniel Manoel
-- Marlon Fanger
-
-**Alunos:**
-- Augusto Senna
-- Jimmy
-- Lívia Clemente
-- Miguel Zacharias
-- Marcela
-
-## Tecnologias Utilizadas
-
-- **Node.js**: Ambiente de execução JavaScript
-- **TypeScript**: Superset tipado de JavaScript
-- **Fastify**: Framework web rápido e de baixo overhead
-- **Prisma**: ORM (Object-Relational Mapping) para acesso ao banco de dados
-- **PostgreSQL**: Banco de dados relacional para produção e desenvolvimento local
-- **JWT**: Autenticação baseada em tokens
-- **bcryptjs**: Biblioteca para hash de senhas
-- **Zod**: Biblioteca para validação de dados
-- **Nodemailer**: Biblioteca para envio de emails (recuperação de senha)
-
-## Estrutura do Projeto
-
-```
-mundo-senai-api/
+Estrutura do Projeto
+stocker-api/
 ├── prisma/                  # Configurações do Prisma ORM
 │   ├── migrations/          # Migrações do banco de dados
 │   └── schema.prisma        # Schema do banco de dados
@@ -53,133 +46,134 @@ mundo-senai-api/
 │   │   ├── types/           # Definições de tipos
 │   │   └── utils/           # Funções utilitárias
 │   └── server.ts            # Ponto de entrada da aplicação
-├── docker-compose.yml       # Configuração do Docker para PostgreSQL local
+├── docker-compose.yml       # Configuração do Docker para PostgreSQL
 ├── package.json             # Dependências e scripts
 └── tsconfig.json            # Configuração do TypeScript
-```
+Modelos de Dados
+Usuário (User)
 
-## Modelos de Dados
+id: Identificador único
+email: Email do usuário (único)
+name: Nome do usuário
+password: Senha (armazenada com hash)
+imageUrl: URL da imagem do perfil (opcional)
+createdAt: Data de criação
+updatedAt: Data de atualização
 
-### Usuário (User)
-- id: Identificador único
-- email: Email do usuário (único)
-- name: Nome do usuário
-- password: Senha do usuário (armazenada com hash)
-- imageUrl: URL da imagem do usuário (opcional)
-- createdAt: Data de criação
-- updatedAt: Data de atualização
+Produto (Product)
 
-### Produto (Product)
-- id: Identificador único
-- name: Nome do produto (único)
-- description: Descrição do produto
-- category: Categoria do produto
-- price: Preço do produto
-- stock: Quantidade em estoque
-- imageUrl: URL da imagem do produto (opcional)
-- createdAt: Data de criação
-- updatedAt: Data de atualização
+id: Identificador único
+name: Nome do produto (único)
+description: Descrição do produto
+category: Categoria do produto
+price: Preço do produto
+stock: Quantidade em estoque
+imageUrl: URL da imagem do produto (opcional)
+createdAt: Data de criação
+updatedAt: Data de atualização
 
-### Token Inválido (InvalidToken)
-- id: Identificador único
-- token: Token JWT invalidado (para logout)
-- expiresAt: Data de expiração do token
-- cratedAt: Data de criação
+Token Inválido (InvalidToken)
 
-## Endpoints da API
+id: Identificador único
+token: Token JWT invalidado
+expiresAt: Data de expiração
+createdAt: Data de criação
 
-### Autenticação
-- `POST /login`: Autenticar usuário
-- `POST /logout`: Deslogar usuário (requer autenticação)
-- `POST /forgot-password`: Solicitar recuperação de senha
-- `POST /reset-password`: Redefinir senha com token
+Endpoints da API
+Autenticação
 
-### Usuários
-- `POST /user`: Criar um novo usuário
-- `GET /user`: Listar todos os usuários (requer autenticação)
-- `GET /user/:id`: Buscar usuário por ID (requer autenticação)
-- `PUT /user/:id`: Atualizar dados do usuário (requer autenticação)
-- `PUT /user/password/:id`: Atualizar senha do usuário (requer autenticação)
-- `DELETE /user/:id`: Excluir usuário (requer autenticação)
+POST /login - Autenticar usuário
+POST /logout - Deslogar usuário (requer autenticação)
+POST /forgot-password - Solicitar recuperação de senha
+POST /reset-password - Redefinir senha com token
 
-### Produtos
-- `POST /product`: Criar um novo produto (requer autenticação)
-- `GET /product`: Listar todos os produtos (requer autenticação)
-- `GET /product/count`: Obter quantidade total de produtos (requer autenticação)
-- `GET /product/lowStock`: Listar produtos com estoque baixo (requer autenticação)
-- `GET /product/:id`: Buscar produto por ID (requer autenticação)
-- `GET /product/category/:category`: Buscar produtos por categoria (requer autenticação)
-- `PUT /product/:id`: Atualizar produto (requer autenticação)
-- `DELETE /product/:id`: Excluir produto (requer autenticação)
+Usuários
 
-## Validação de Dados
+POST /user - Criar novo usuário
+GET /user - Listar todos os usuários (requer autenticação)
+GET /user/:id - Buscar usuário por ID (requer autenticação)
+PUT /user/:id - Atualizar dados do usuário (requer autenticação)
+PUT /user/password/:id - Atualizar senha (requer autenticação)
+DELETE /user/:id - Excluir usuário (requer autenticação)
 
-O projeto utiliza a biblioteca Zod para validação de dados em todas as rotas:
+Produtos
 
-- Validação de criação de usuários: nome obrigatório, email válido, senha com mínimo de 6 caracteres
-- Validação de atualização de usuários: campos opcionais com as mesmas regras
-- Validação de produtos: nome, descrição, categoria obrigatórios, preço positivo, estoque não-negativo
-- Validação de IDs: conversão e validação de IDs numéricos
+POST /product - Criar novo produto (requer autenticação)
+GET /product - Listar todos os produtos (requer autenticação)
+GET /product/count - Obter quantidade total de produtos (requer autenticação)
+GET /product/lowStock - Listar produtos com estoque baixo (requer autenticação)
+GET /product/:id - Buscar produto por ID (requer autenticação)
+GET /product/category/:category - Buscar por categoria (requer autenticação)
+PUT /product/:id - Atualizar produto (requer autenticação)
+DELETE /product/:id - Excluir produto (requer autenticação)
 
-## Configuração de Ambientes
+Instalação e Configuração
+Pré-requisitos
 
-O projeto suporta múltiplos ambientes de desenvolvimento:
+Node.js (versão 18 ou superior)
+Docker e Docker Compose
+PostgreSQL (ou use o Docker)
 
-### Configuração Padrão (Supabase)
+Configuração Padrão (Supabase)
 
-1. Clone o repositório
-2. Instale as dependências:
-   ```
-   npm install
-   ```
-3. Configure o arquivo `.env.supabase` com as credenciais do Supabase
-4. Sincronize com o ambiente Supabase:
-   ```
-   npm run sync:supabase
-   ```
-5. Inicie o servidor de desenvolvimento:
-   ```
-   npm run dev
-   ```
+Clone o repositório:
 
-### Configuração Local com Docker 
+bash   git clone https://github.com/dannmf/stocker-api.git
+   cd stocker-api
 
-1. Clone o repositório
-2. Instale as dependências:
-   ```
-   npm install
-   ```
-3. Inicie o container Docker do PostgreSQL:
-   ```
-   npm run docker:up
-   ```
-4. Sincronize com o ambiente local:
-   ```
-   npm run sync:local
-   ```
-5. Inicie o servidor com as configurações locais:
-   ```
-   npm run dev
-   ```
+Instale as dependências:
 
-### Scripts Disponíveis
+bash   npm install
 
-- `npm run dev`: Inicia o servidor de desenvolvimento
-- `npm run docker:up`: Inicia o container Docker do PostgreSQL
-- `npm run docker:down`: Para o container Docker
-- `npm run docker:dev`: Inicia o Docker e o servidor com configuração local
-- `npm run sync:local`: Sincroniza o Prisma com o banco local
-- `npm run sync:supabase`: Sincroniza o Prisma com o Supabase
+Configure o arquivo .env.supabase com suas credenciais do Supabase
+Sincronize com o banco de dados:
 
-O servidor estará disponível em `http://localhost:3000`
+bash   npm run sync:supabase
 
-## Segurança
+Inicie o servidor:
 
-- Autenticação via JWT com tempo de expiração
-- Senhas armazenadas com hash usando bcryptjs
-- Sistema de invalidação de tokens para logout seguro
-- Variáveis de ambiente para armazenamento seguro de credenciais
-- Middleware de autenticação para proteção de rotas
-- Recuperação de senha via email com tokens temporários
+bash   npm run dev
+Configuração Local com Docker
 
-Desenvolvido para o evento Mundo SENAI - Junho 2025
+Clone e instale as dependências (passos 1 e 2 acima)
+Inicie o container PostgreSQL:
+
+bash   npm run docker:up
+
+Sincronize com o banco local:
+
+bash   npm run sync:local
+
+Inicie o servidor:
+
+bash   npm run dev
+O servidor estará disponível em http://localhost:3000
+Scripts Disponíveis
+
+npm run dev - Inicia o servidor de desenvolvimento
+npm run docker:up - Inicia o container Docker do PostgreSQL
+npm run docker:down - Para o container Docker
+npm run docker:dev - Inicia Docker + servidor com configuração local
+npm run sync:local - Sincroniza Prisma com banco local
+npm run sync:supabase - Sincroniza Prisma com Supabase
+
+Validação de Dados
+Todas as rotas utilizam Zod para validação:
+
+Usuários: Nome obrigatório, email válido, senha mínima de 6 caracteres
+Produtos: Nome, descrição e categoria obrigatórios, preço positivo, estoque não-negativo
+IDs: Conversão e validação automática de parâmetros numéricos
+
+Segurança
+
+🔒 Autenticação JWT com tempo de expiração configurável
+🔒 Senhas com hash bcryptjs
+🔒 Sistema de invalidação de tokens (logout seguro)
+🔒 Variáveis de ambiente para credenciais
+🔒 Middleware de autenticação em rotas protegidas
+🔒 Recuperação de senha com tokens temporários
+
+Contribuindo
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
+Licença
+Este projeto está sob a licença MIT.
