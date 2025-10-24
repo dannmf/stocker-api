@@ -3,11 +3,11 @@ version: '3'
 services:
   postgres:
     image: postgres:latest
-    container_name: mundo-senai-db
+    container_name: stocker-api-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mundo-senai
+      POSTGRES_DB: stocker-api
     ports:
       - "5432:5432"
     volumes:
