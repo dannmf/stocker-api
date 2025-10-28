@@ -1,4 +1,4 @@
-import z from "zod/v4";
+import z from "zod";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ProductService } from "./product_service";
 import { formatError } from "../../shared/utils/errors/formatZodErrors";

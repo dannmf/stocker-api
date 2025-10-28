@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { z, ZodSafeParseError, ZodSafeParseResult, } from "zod/v4"
+import { z } from "zod"
 import { UserService } from "./user_service";
 import { formatError } from "../../shared/utils/errors/formatZodErrors";
 import { CreateUserBody, createUserBodySchema, ParamsWithId, paramsWithIdSchema, UpdatePasswordBody, UpdateUserBody, updateUserPasswordSchema, updateUserSchema } from "./user_schema";

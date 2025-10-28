@@ -1,12 +1,16 @@
-import z from "zod/v4"
+import z from "zod"
+
+export default {
+    
+}
 
 const authBodySchema = z.object({
-    email: z.email(),
+    email: z.string().email(),
     password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres")
 })
 
 const forgotPasswordSchema = z.object({
-    email: z.email(),
+    email: z.string().email(),
 })
 
 const resetPasswordSchema = z.object({
@@ -22,7 +26,7 @@ export {
     authBodySchema,
     forgotPasswordSchema,
     resetPasswordSchema,
-    LoginBody,
-    ForgotPasswordBody,
-    ResetPasswordBody
+    type LoginBody,
+    type ForgotPasswordBody,
+    type ResetPasswordBody
 }

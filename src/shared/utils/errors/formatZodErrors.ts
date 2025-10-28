@@ -1,5 +1,5 @@
-import z, { ZodSafeParseError } from "zod/v4";
+import { ZodError } from "zod";
 
-export function formatError(result: ZodSafeParseError<any>) {
-    return z.prettifyError(result.error)
+export function formatError(result: { success: false; error: ZodError }) {
+    return result.error.format()
 }

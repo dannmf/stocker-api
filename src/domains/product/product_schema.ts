@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const paramsWithIdSchema = z.object({
     id: z.string().transform((value) => {
@@ -29,7 +29,7 @@ const updateProductBodySchema = z.object({
     price: z.number().positive("O preço deve ser um número positivo").optional(),
     stock: z.number().int().nonnegative("O estoque deve ser um número inteiro não negativo").optional(),
     category: z.string().min(1, "A categoria é obrigatória").optional(),
-    imageUrl: z.string("A URL da imagem deve ser válida").optional()
+    imageUrl: z.string().optional()
 }).refine(data => Object.keys(data).length > 0, {
     message: "Pelo menos um campo deve ser fornecido para atualização"
 })
@@ -44,9 +44,9 @@ export {
     categoryParamsSchema,
     createProductBodySchema,
     updateProductBodySchema,
-    ParamsWithId,
-    CategoryParams,
-    CreateProductBody,
-    UpdateProductBody
+    type ParamsWithId,
+    type CategoryParams,
+    type CreateProductBody,
+    type UpdateProductBody
 }
 

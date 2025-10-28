@@ -1,4 +1,4 @@
-import z from "zod/v4";
+import z from "zod";
 
 
 const paramsWithIdSchema = z.object({
@@ -13,14 +13,14 @@ const paramsWithIdSchema = z.object({
 
 const createUserBodySchema = z.object({
     name: z.string().min(1, "O nome é obrigatório"),
-    email: z.email(),
+    email: z.string().email(),
     imageUrl: z.string().optional(),
     password: z.string().min(6, "A senha deve conter no mínimo 6 caracteres")
 })
 
 const updateUserSchema = z.object({
     name: z.string().min(1, "O nome é obrigatório").optional(),
-    email: z.email().optional(),
+    email: z.string().email().optional(),
     imageUrl: z.string().optional(),
 }).refine(data => Object.keys(data).length > 0, {
     message: "Pelo menos um campo deve ser fornecido para atualização"
