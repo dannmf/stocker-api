@@ -1,157 +1,174 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { z } from "zod"
+import { z } from "zod";
 import { UserService } from "./user_service";
 import { formatError } from "../../shared/utils/errors/formatZodErrors";
-import { CreateUserBody, createUserBodySchema, ParamsWithId, paramsWithIdSchema, UpdatePasswordBody, UpdateUserBody, updateUserPasswordSchema, updateUserSchema } from "./user_schema";
+import {
+  CreateUserBody,
+  createUserBodySchema,
+  ParamsWithId,
+  paramsWithIdSchema,
+  UpdatePasswordBody,
+  UpdateUserBody,
+  updateUserPasswordSchema,
+  updateUserSchema,
+} from "./user_schema";
 
 const userService = new UserService();
 
 // hello world
 
-
-
 export const usersController = {
-    async create(request: FastifyRequest<{ Body: CreateUserBody }>, reply: FastifyReply) {
-        try {
-            const result = createUserBodySchema.safeParse(request.body);
+  async create(
+    request: FastifyRequest<{ Body: CreateUserBody }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const result = createUserBodySchema.safeParse(request.body);
 
-            if (!result.success) {
-                return reply.status(400).send({
-                    message: "Dados inválidos",
-                    errors: formatError(result)
-                });
-            }
-            const user = await userService.createUser(result.data);
-            return reply.status(201).send(user);
+      if (!result.success) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: formatError(result),
+        });
+      }
+      const user = await userService.createUser(result.data);
+      return reply.status(201).send(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
 
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
+  async findAll(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const users = await userService.findAll();
+      return reply.status(200).send(users);
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
 
-    async findAll(request: FastifyRequest, reply: FastifyReply) {
-        try {
-            const users = await userService.findAll();
-            return reply.status(200).send(users);
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
+  async findById(
+    request: FastifyRequest<{ Params: ParamsWithId }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const result = paramsWithIdSchema.safeParse(request.params);
+      if (!result.success) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: formatError(result),
+        });
+      }
+      const userId = result.data.id;
+      const user = await userService.findById(userId);
 
-    async findById(request: FastifyRequest<{ Params: ParamsWithId }>, reply: FastifyReply) {
-        try {
-            const result = paramsWithIdSchema.safeParse(request.params)
-            if (!result.success) {
-                return reply.status(400).send({
-                    message: "ID inválido",
-                    errors: formatError(result)
-                });
-            }
-            const userId = result.data.id
-            const user = await userService.findById(userId);
+      return reply.status(200).send(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
+  async update(
+    request: FastifyRequest<{ Params: ParamsWithId; Body: UpdateUserBody }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const paramsResult = paramsWithIdSchema.safeParse(request.params);
 
-            return reply.status(200).send(user);
+      if (!paramsResult.success) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: formatError(paramsResult),
+        });
+      }
 
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
-    async update(request: FastifyRequest<{ Params: ParamsWithId; Body: UpdateUserBody }>, reply: FastifyReply) {
-        try {
-            const paramsResult = paramsWithIdSchema.safeParse(request.params)
+      const bodyResult = updateUserSchema.safeParse(request.body);
 
-            if (!paramsResult.success) {
-                return reply.status(400).send({
-                    message: "ID inválido",
-                    errors: formatError(paramsResult)
-                });
-            }
+      if (!bodyResult.success) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: formatError(bodyResult),
+        });
+      }
 
-            const bodyResult = updateUserSchema.safeParse(request.body)
+      const userId = paramsResult.data.id;
+      const data = bodyResult.data;
 
-            if (!bodyResult.success) {
-                return reply.status(400).send({
-                    message: "Dados inválidos",
-                    errors: formatError(bodyResult)
-                })
-            }
+      const user = await userService.update(userId, data);
+      return reply.send(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
 
-            const userId = paramsResult.data.id;
-            const data = bodyResult.data
+  async updatePassword(
+    request: FastifyRequest<{ Params: ParamsWithId; Body: UpdatePasswordBody }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const paramsResult = paramsWithIdSchema.safeParse(request.params);
+      if (!paramsResult.success) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: formatError(paramsResult),
+        });
+      }
 
-            const user = await userService.update(userId, data);
-            return reply.send(user);
+      const bodyResult = updateUserPasswordSchema.safeParse(request.body);
 
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
+      if (!bodyResult.success) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: formatError(bodyResult),
+        });
+      }
 
-    async updatePassword(request: FastifyRequest<{ Params: ParamsWithId; Body: UpdatePasswordBody }>, reply: FastifyReply) {
-        try {
-            const paramsResult = paramsWithIdSchema.safeParse(request.params)
-            if (!paramsResult.success) {
-                return reply.status(400).send({
-                    message: "ID inválido",
-                    errors: formatError(paramsResult)
-                })
-            }
+      const userId = paramsResult.data.id;
+      const data = bodyResult.data;
 
-            const bodyResult = updateUserPasswordSchema.safeParse(request.body)
+      const user = await userService.updatePassword(userId, data);
 
-            if (!bodyResult.success) {
-                return reply.status(400).send({
-                    message: 'Dados inválidos',
-                    errors: formatError(bodyResult)
-                })
-            }
+      return reply.send(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
 
-            const userId = paramsResult.data.id
-            const data = bodyResult.data
+  async delete(
+    request: FastifyRequest<{ Params: ParamsWithId }>,
+    reply: FastifyReply,
+  ) {
+    try {
+      const result = paramsWithIdSchema.safeParse(request.params);
 
-            const user = await userService.updatePassword(userId, data)
-
-            return reply.send(user)
-
-
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
-
-    async delete(request: FastifyRequest<{ Params: ParamsWithId }>, reply: FastifyReply) {
-        try {
-            const result = paramsWithIdSchema.safeParse(request.params)
-
-            if (!result.success) {
-                return reply.status(400).send({
-                    message: "ID inválido",
-                    errors: formatError(result)
-                })
-            }
-            const userId = result.data.id
-            await userService.delete(userId);
-            return reply.status(204).send();
-        } catch (error) {
-            if (error instanceof Error) {
-                return reply.status(400).send({ message: error.message });
-            }
-            return reply.status(500).send({ message: "Erro interno do servidor" });
-        }
-    },
-}
+      if (!result.success) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: formatError(result),
+        });
+      }
+      const userId = result.data.id;
+      await userService.delete(userId);
+      return reply.status(204).send();
+    } catch (error) {
+      if (error instanceof Error) {
+        return reply.status(400).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: "Erro interno do servidor" });
+    }
+  },
+};

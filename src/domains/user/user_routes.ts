@@ -1,35 +1,33 @@
-import { FastifyInstance } from 'fastify'
-import { usersController } from './user_controller'
-import { authenticate } from '../../shared/middlewares/authenticate'
+import { FastifyInstance } from "fastify";
+import { usersController } from "./user_controller";
+import { authenticate } from "../../shared/middlewares/authenticate";
 
 export async function userRoutes(fastify: FastifyInstance) {
+  fastify.post("/user", usersController.create);
 
-
-  fastify.post('/user', usersController.create)
-  
   // Rotas protegidas que precisam de autenticação
-  fastify.get('/user', {
+  fastify.get("/user", {
     preHandler: authenticate,
-    handler: usersController.findAll
-  })
-  
-  fastify.get('/user/:id', {
-    preHandler: authenticate,
-    handler: usersController.findById
-  })
-  
-  fastify.put('/user/:id', {
-    preHandler: authenticate,
-    handler: usersController.update
-  })
+    handler: usersController.findAll,
+  });
 
-  fastify.put('/user/password/:id', {
+  fastify.get("/user/:id", {
     preHandler: authenticate,
-    handler: usersController.updatePassword
-  })
-  
-  fastify.delete('/user/:id', {
+    handler: usersController.findById,
+  });
+
+  fastify.put("/user/:id", {
     preHandler: authenticate,
-    handler: usersController.delete
-  })
+    handler: usersController.update,
+  });
+
+  fastify.put("/user/password/:id", {
+    preHandler: authenticate,
+    handler: usersController.updatePassword,
+  });
+
+  fastify.delete("/user/:id", {
+    preHandler: authenticate,
+    handler: usersController.delete,
+  });
 }

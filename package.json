@@ -5,6 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
+    "lint:check": "prettier --check .",
+    "lint:fix": "prettier --write .",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:dev": "npm run docker:up && npm run dev:local",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.21",
+    "prettier": "^3.7.4",
     "prisma": "^6.8.2",
     "tsx": "^4.19.4",
     "txs": "^1.0.0",
