@@ -1,5 +1,4 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { z } from "zod";
 import { UserService } from "./user_service";
 import { formatError } from "../../shared/utils/errors/formatZodErrors";
 import {

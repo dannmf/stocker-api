@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 const paramsWithIdSchema = z.object({
   id: z.string().transform((value) => {
