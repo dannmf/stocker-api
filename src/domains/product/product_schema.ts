@@ -10,6 +10,12 @@ const paramsWithIdSchema = z.object({
   }),
 });
 
+const invalidQuantitySchema = z.object({
+  quantity: z
+    .number()
+    .min(1, { message: "A quantidade deve ser maior que zero" }),
+});
+
 const categoryParamsSchema = z.object({
   category: z.string().min(1, "A categoria é obrigatória").toLowerCase(),
 });
@@ -50,6 +56,7 @@ const updateProductBodySchema = z
     message: "Pelo menos um campo deve ser fornecido para atualização",
   });
 
+type InvalidQuantity = z.infer<typeof invalidQuantitySchema>;
 type ParamsWithId = z.infer<typeof paramsWithIdSchema>;
 type CategoryParams = z.infer<typeof categoryParamsSchema>;
 type CreateProductBody = z.infer<typeof createProductBodySchema>;
@@ -60,6 +67,8 @@ export {
   categoryParamsSchema,
   createProductBodySchema,
   updateProductBodySchema,
+  invalidQuantitySchema,
+  type InvalidQuantity,
   type ParamsWithId,
   type CategoryParams,
   type CreateProductBody,

@@ -7,6 +7,7 @@ import {
   categoryParamsSchema,
   CreateProductBody,
   createProductBodySchema,
+  invalidQuantitySchema,
   ParamsWithId,
   paramsWithIdSchema,
   UpdateProductBody,
@@ -142,12 +143,7 @@ export const productController = {
         });
       }
 
-      const bodySchema = z.object({
-        quantity: z
-          .number()
-          .min(1, { message: "A quantidade deve ser maior que zero" }),
-      });
-      const bodyResult = bodySchema.safeParse(request.body);
+      const bodyResult = invalidQuantitySchema.safeParse(request.body);
       if (!bodyResult.success) {
         return reply.status(400).send({
           message: "Quantidade inválida",
@@ -190,12 +186,7 @@ export const productController = {
         });
       }
 
-      const bodySchema = z.object({
-        quantity: z
-          .number()
-          .min(1, { message: "A quantidade deve ser maior que zero" }),
-      });
-      const bodyResult = bodySchema.safeParse(request.body);
+      const bodyResult = invalidQuantitySchema.safeParse(request.body);
       if (!bodyResult.success) {
         return reply.status(400).send({
           message: "Quantidade inválida",
