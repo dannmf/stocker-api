@@ -38,12 +38,14 @@ Antes de começar, você precisa ter instalado:
 ## Instalação
 
 1. Clone o repositório:
+
 ```bash
 git clone <url-do-repositorio>
 cd stocker-api
 ```
 
 2. Instale as dependências:
+
 ```bash
 npm install
 ```
@@ -51,6 +53,7 @@ npm install
 3. Configure as variáveis de ambiente:
 
 O arquivo `.env` já foi criado com as configurações padrão:
+
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/stocker-api?schema=public"
 DIRECT_URL="postgresql://postgres:postgres@localhost:5432/stocker-api?schema=public"
@@ -60,16 +63,19 @@ JWT_SECRET="S3cr3T0k3en6615"
 ## Configuração do Banco de Dados
 
 1. Suba o container do PostgreSQL:
+
 ```bash
 npm run docker:up
 ```
 
 2. Gere o Prisma Client:
+
 ```bash
 npx prisma generate
 ```
 
 3. Crie as tabelas no banco de dados:
+
 ```bash
 npx prisma db push
 ```
@@ -109,6 +115,7 @@ stocker-api/
 ## Modelos do Banco de Dados
 
 ### User
+
 - id (autoincrement)
 - email (único)
 - name
@@ -118,6 +125,7 @@ stocker-api/
 - updatedAt
 
 ### Product
+
 - id (autoincrement)
 - name (único)
 - description
@@ -129,6 +137,7 @@ stocker-api/
 - updatedAt
 
 ### StockMovement
+
 - id (autoincrement)
 - productId
 - quantity
@@ -137,6 +146,7 @@ stocker-api/
 - createdAt
 
 ### InvalidToken
+
 - id (autoincrement)
 - token (único)
 - expiresAt
@@ -181,17 +191,20 @@ docker-compose down -v
 ## Endpoints da API
 
 ### Autenticação
+
 - `POST /auth/login` - Login de usuário
 - `POST /auth/register` - Registro de novo usuário
 - `POST /auth/logout` - Logout de usuário
 
 ### Usuários
+
 - `GET /users` - Lista todos os usuários
 - `GET /users/:id` - Busca usuário por ID
 - `PUT /users/:id` - Atualiza usuário
 - `DELETE /users/:id` - Remove usuário
 
 ### Produtos
+
 - `GET /products` - Lista todos os produtos
 - `GET /products/:id` - Busca produto por ID
 - `POST /products` - Cria novo produto
@@ -200,12 +213,12 @@ docker-compose down -v
 
 ## Variáveis de Ambiente
 
-| Variável | Descrição | Padrão |
-|----------|-----------|--------|
+| Variável     | Descrição                    | Padrão                                                    |
+| ------------ | ---------------------------- | --------------------------------------------------------- |
 | DATABASE_URL | URL de conexão do PostgreSQL | postgresql://postgres:postgres@localhost:5432/stocker-api |
-| DIRECT_URL | URL direta de conexão | postgresql://postgres:postgres@localhost:5432/stocker-api |
-| JWT_SECRET | Chave secreta para JWT | S3cr3T0k3en6615 |
-| PORT | Porta do servidor | 3000 |
+| DIRECT_URL   | URL direta de conexão        | postgresql://postgres:postgres@localhost:5432/stocker-api |
+| JWT_SECRET   | Chave secreta para JWT       | S3cr3T0k3en6615                                           |
+| PORT         | Porta do servidor            | 3000                                                      |
 
 ## Licença
 

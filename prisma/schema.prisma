@@ -6,9 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 model User {
@@ -54,5 +52,5 @@ model InvalidToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   expiresAt DateTime
-  cratedAt  DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
