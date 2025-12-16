@@ -111,7 +111,7 @@ export class ProductService {
     return products;
   }
 
-  async addStock(id: number, quantity: number, user?: string) {
+  async addStock(id: number, quantity: number, userId: number) {
     const product = await prisma.product.findUnique({
       where: { id },
     });
@@ -124,7 +124,7 @@ export class ProductService {
         productId: id,
         quantity,
         type: "IN",
-        user,
+        userId,
       },
     });
     return await prisma.product.update({
@@ -135,7 +135,7 @@ export class ProductService {
     });
   }
 
-  async removeStock(id: number, quantity: number, user?: string) {
+  async removeStock(id: number, quantity: number, userId: number) {
     const product = await prisma.product.findUnique({
       where: { id },
     });
@@ -152,7 +152,7 @@ export class ProductService {
         productId: id,
         quantity,
         type: "OUT",
-        user,
+        userId,
       },
     });
     return await prisma.product.update({

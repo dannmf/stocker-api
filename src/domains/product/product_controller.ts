@@ -151,10 +151,21 @@ export const productController = {
         });
       }
 
+      if (!request.user) {
+        return reply.status(401).send({
+          message: "Usuário não autenticado",
+        });
+      }
+
       const productId = paramsResult.data.id;
       const quantity = bodyResult.data.quantity;
+      const userId = Number(request.user?.id);
 
-      const product = await productService.removeStock(productId, quantity);
+      const product = await productService.removeStock(
+        productId,
+        quantity,
+        userId,
+      );
 
       return reply.status(200).send(product);
     } catch (error) {
@@ -194,10 +205,21 @@ export const productController = {
         });
       }
 
+      if (!request.user) {
+        return reply.status(401).send({
+          message: "Usuário não autenticado",
+        });
+      }
+
       const productId = paramsResult.data.id;
+      const userId = Number(request.user?.id);
       const quantity = bodyResult.data.quantity;
 
-      const product = await productService.addStock(productId, quantity);
+      const product = await productService.addStock(
+        productId,
+        quantity,
+        userId,
+      );
 
       return reply.status(200).send(product);
     } catch (error) {
