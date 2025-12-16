@@ -112,54 +112,58 @@ export class ProductService {
   }
 
   async addStock(id: number, quantity: number, userId: number) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+    return await prisma.$transaction(async (tx) => {
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
 
-    if (!product) {
-      throw new Error("Produto não encontrado");
-    }
-    await prisma.stockMovement.create({
-      data: {
-        productId: id,
-        quantity,
-        type: "IN",
-        userId,
-      },
-    });
-    return await prisma.product.update({
-      where: { id },
-      data: {
-        stock: product.stock + quantity,
-      },
+      if (!product) {
+        throw new Error("Produto não encontrado");
+      }
+      await tx.stockMovement.create({
+        data: {
+          productId: id,
+          quantity,
+          type: "IN",
+          userId,
+        },
+      });
+      return await tx.product.update({
+        where: { id },
+        data: {
+          stock: product.stock + quantity,
+        },
+      });
     });
   }
 
   async removeStock(id: number, quantity: number, userId: number) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+    return await prisma.$transaction(async (tx) => {
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
 
-    if (!product) {
-      throw new Error("Produto não encontrado");
-    }
+      if (!product) {
+        throw new Error("Produto não encontrado");
+      }
 
-    if (product.stock < quantity) {
-      throw new Error("Estoque insuficiente");
-    }
-    await prisma.stockMovement.create({
-      data: {
-        productId: id,
-        quantity,
-        type: "OUT",
-        userId,
-      },
-    });
-    return await prisma.product.update({
-      where: { id },
-      data: {
-        stock: product.stock - quantity,
-      },
+      if (product.stock < quantity) {
+        throw new Error("Estoque insuficiente");
+      }
+      await tx.stockMovement.create({
+        data: {
+          productId: id,
+          quantity,
+          type: "OUT",
+          userId,
+        },
+      });
+      return await tx.product.update({
+        where: { id },
+        data: {
+          stock: product.stock - quantity,
+        },
+      });
     });
   }
 
