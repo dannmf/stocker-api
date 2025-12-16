@@ -17,6 +17,7 @@ model User {
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  stockMovements StockMovement[]
 }
 
 model Product {
@@ -26,6 +27,7 @@ model Product {
   category    String
   price       Float
   stock       Int             @default(0)
+  minStock    Int             @default(5)
   imageUrl    String?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -34,13 +36,14 @@ model Product {
 
 model StockMovement {
   id        Int               @id @default(autoincrement())
+  userId    Int
   productId Int
   quantity  Int
   type      StockMovementType
-  user      String?
   createdAt DateTime          @default(now())
 
   product Product @relation(fields: [productId], references: [id])
+  user  User @relation(fields: [userId], references: [id])
 }
 
 enum StockMovementType {

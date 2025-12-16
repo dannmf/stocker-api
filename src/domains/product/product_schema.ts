@@ -24,6 +24,12 @@ const createProductBodySchema = z.object({
   name: z.string().min(1, "O nome é obrigatório"),
   description: z.string().min(1, "A descrição é obrigatória"),
   price: z.number().positive("O preço deve ser um número positivo"),
+  minStock: z
+    .number()
+    .int()
+    .min(1, "O estoque mínimo deve ser maior que zero")
+    .nonnegative("O estoque não deve ter um valor negativo")
+    .optional(),
   stock: z
     .number()
     .int()
@@ -43,6 +49,12 @@ const updateProductBodySchema = z
     price: z
       .number()
       .positive("O preço deve ser um número positivo")
+      .optional(),
+    minStock: z
+      .number()
+      .int()
+      .min(1, "O estoque mínimo deve ser maior que zero")
+      .nonnegative("O estoque não deve ter um valor negativo")
       .optional(),
     stock: z
       .number()

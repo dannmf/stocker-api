@@ -5,6 +5,7 @@ export class ProductService {
     name: string;
     description: string;
     price: number;
+    minStock?: number;
     stock: number;
     category: string;
     imageUrl: string;
@@ -24,6 +25,7 @@ export class ProductService {
         name: data.name,
         description: data.description,
         price: data.price,
+        minStock: data.minStock,
         stock: data.stock,
         category: data.category,
         imageUrl: data.imageUrl,
@@ -34,6 +36,7 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
+        minStock: true,
         stock: true,
         category: true,
         imageUrl: true,
@@ -50,6 +53,7 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
+        minStock: true,
         stock: true,
         category: true,
         imageUrl: true,
@@ -72,6 +76,7 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
+        minStock: true,
         stock: true,
         category: true,
         imageUrl: true,
@@ -92,74 +97,74 @@ export class ProductService {
 
   async findLowStockProducts() {
     const products = await prisma.product.findMany({
-      where: {
-        stock: {
-          lte: 5,
-        },
-      },
       select: {
         id: true,
         name: true,
         description: true,
         price: true,
+        minStock: true,
         stock: true,
         category: true,
         imageUrl: true,
       },
     });
 
-    return products;
+    return products.filter((product) => product.stock <= product.minStock);
   }
 
-  async addStock(id: number, quantity: number, user?: string) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+  async addStock(id: number, quantity: number, userId: number) {
+    return await prisma.$transaction(async (tx) => {
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
 
-    if (!product) {
-      throw new Error("Produto não encontrado");
-    }
-    await prisma.stockMovement.create({
-      data: {
-        productId: id,
-        quantity,
-        type: "IN",
-        user,
-      },
-    });
-    return await prisma.product.update({
-      where: { id },
-      data: {
-        stock: product.stock + quantity,
-      },
+      if (!product) {
+        throw new Error("Produto não encontrado");
+      }
+      await tx.stockMovement.create({
+        data: {
+          productId: id,
+          quantity,
+          type: "IN",
+          userId,
+        },
+      });
+      return await tx.product.update({
+        where: { id },
+        data: {
+          stock: product.stock + quantity,
+        },
+      });
     });
   }
 
-  async removeStock(id: number, quantity: number, user?: string) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+  async removeStock(id: number, quantity: number, userId: number) {
+    return await prisma.$transaction(async (tx) => {
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
 
-    if (!product) {
-      throw new Error("Produto não encontrado");
-    }
+      if (!product) {
+        throw new Error("Produto não encontrado");
+      }
 
-    if (product.stock < quantity) {
-      throw new Error("Estoque insuficiente");
-    }
-    await prisma.stockMovement.create({
-      data: {
-        productId: id,
-        quantity,
-        type: "OUT",
-        user,
-      },
-    });
-    return await prisma.product.update({
-      where: { id },
-      data: {
-        stock: product.stock - quantity,
-      },
+      if (product.stock < quantity) {
+        throw new Error("Estoque insuficiente");
+      }
+      await tx.stockMovement.create({
+        data: {
+          productId: id,
+          quantity,
+          type: "OUT",
+          userId,
+        },
+      });
+      return await tx.product.update({
+        where: { id },
+        data: {
+          stock: product.stock - quantity,
+        },
+      });
     });
   }
 
@@ -178,6 +183,7 @@ export class ProductService {
         description: true,
         price: true,
         stock: true,
+        minStock: true,
         category: true,
         imageUrl: true,
       },
@@ -208,6 +214,7 @@ export class ProductService {
       name?: string;
       description?: string;
       price?: number;
+      minStock?: number;
       stock?: number;
       category?: string;
       imageUrl?: string;
@@ -227,6 +234,7 @@ export class ProductService {
         name: data.name,
         description: data.description,
         price: data.price,
+        minStock: data.minStock,
         stock: data.stock,
         category: data.category,
         imageUrl: data.imageUrl,
@@ -236,6 +244,7 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
+        minStock: true,
         stock: true,
         category: true,
         imageUrl: true,
