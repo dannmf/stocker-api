@@ -56,6 +56,54 @@ export const productController = {
     }
   },
 
+  async update(
+    request: FastifyRequest<{ Params: ParamsWithId; Body: UpdateProductBody }>,
+    reply: FastifyReply,
+  ) {
+    const paramsResult = paramsWithIdSchema.safeParse(request.params);
+
+    if (!paramsResult.success) {
+      return reply.status(400).send({
+        message: "ID inválido",
+        errors: formatError(paramsResult),
+      });
+    }
+
+    const bodyResult = updateProductBodySchema.safeParse(request.body);
+    if (!bodyResult.success) {
+      return reply.status(400).send({
+        message: "Dados inválidos",
+        errors: formatError(bodyResult),
+      });
+    }
+
+    const productId = paramsResult.data.id;
+    const data = bodyResult.data;
+
+    const product = await productService.updateProduct(productId, data);
+
+    return reply.status(200).send(product);
+  },
+
+  async delete(
+    request: FastifyRequest<{ Params: ParamsWithId }>,
+    reply: FastifyReply,
+  ) {
+    const result = paramsWithIdSchema.safeParse(request.params);
+
+    if (!result.success) {
+      return reply.status(400).send({
+        message: "ID inválido",
+        errors: formatError(result),
+      });
+    }
+
+    const productId = result.data.id;
+    const user = await productService.delete(productId);
+
+    return reply.send(user);
+  },
+
   async getAll(request: FastifyRequest, reply: FastifyReply) {
     try {
       const products = await productService.findAll();
@@ -120,131 +168,6 @@ export const productController = {
     }
   },
 
-  async getLowStock(request: FastifyRequest, reply: FastifyReply) {
-    try {
-      const products = await productService.findLowStockProducts();
-      return reply.status(200).send(products);
-    } catch (error) {
-      if (error instanceof Error) {
-        return reply.status(500).send({
-          message: "Erro ao buscar produtos",
-          error: error.message,
-        });
-      }
-      return reply.status(500).send({
-        message: "Erro interno do servidor",
-      });
-    }
-  },
-
-  async removeProductStock(
-    request: FastifyRequest<{
-      Params: ParamsWithId;
-      Body: { quantity: number };
-    }>,
-    reply: FastifyReply,
-  ) {
-    try {
-      const paramsResult = paramsWithIdSchema.safeParse(request.params);
-      if (!paramsResult.success) {
-        return reply.status(400).send({
-          message: "ID inválido",
-          errors: formatError(paramsResult),
-        });
-      }
-
-      const bodyResult = invalidQuantitySchema.safeParse(request.body);
-      if (!bodyResult.success) {
-        return reply.status(400).send({
-          message: "Quantidade inválida",
-          errors: formatError(bodyResult),
-        });
-      }
-
-      if (!request.user) {
-        return reply.status(401).send({
-          message: "Usuário não autenticado",
-        });
-      }
-
-      const productId = paramsResult.data.id;
-      const quantity = bodyResult.data.quantity;
-      const userId = Number(request.user?.id);
-
-      const product = await productService.removeStock(
-        productId,
-        quantity,
-        userId,
-      );
-
-      return reply.status(200).send(product);
-    } catch (error) {
-      if (error instanceof Error) {
-        return reply.status(500).send({
-          message: "Erro ao remover estoque",
-          error: error.message,
-        });
-      }
-      return reply.status(500).send({
-        message: "Erro interno do servidor",
-      });
-    }
-  },
-
-  async addProductStock(
-    request: FastifyRequest<{
-      Params: ParamsWithId;
-      Body: { quantity: number };
-    }>,
-    reply: FastifyReply,
-  ) {
-    try {
-      const paramsResult = paramsWithIdSchema.safeParse(request.params);
-      if (!paramsResult.success) {
-        return reply.status(400).send({
-          message: "ID inválido",
-          errors: formatError(paramsResult),
-        });
-      }
-
-      const bodyResult = invalidQuantitySchema.safeParse(request.body);
-      if (!bodyResult.success) {
-        return reply.status(400).send({
-          message: "Quantidade inválida",
-          errors: formatError(bodyResult),
-        });
-      }
-
-      if (!request.user) {
-        return reply.status(401).send({
-          message: "Usuário não autenticado",
-        });
-      }
-
-      const productId = paramsResult.data.id;
-      const userId = Number(request.user?.id);
-      const quantity = bodyResult.data.quantity;
-
-      const product = await productService.addStock(
-        productId,
-        quantity,
-        userId,
-      );
-
-      return reply.status(200).send(product);
-    } catch (error) {
-      if (error instanceof Error) {
-        return reply.status(500).send({
-          message: "Erro ao adicionar estoque",
-          error: error.message,
-        });
-      }
-      return reply.status(500).send({
-        message: "Erro interno do servidor",
-      });
-    }
-  },
-
   async getByCategory(
     request: FastifyRequest<{ Params: CategoryParams }>,
     reply: FastifyReply,
@@ -293,53 +216,5 @@ export const productController = {
     const products = await productService.findByPeriod(start, end);
 
     return reply.status(200).send(products);
-  },
-
-  async update(
-    request: FastifyRequest<{ Params: ParamsWithId; Body: UpdateProductBody }>,
-    reply: FastifyReply,
-  ) {
-    const paramsResult = paramsWithIdSchema.safeParse(request.params);
-
-    if (!paramsResult.success) {
-      return reply.status(400).send({
-        message: "ID inválido",
-        errors: formatError(paramsResult),
-      });
-    }
-
-    const bodyResult = updateProductBodySchema.safeParse(request.body);
-    if (!bodyResult.success) {
-      return reply.status(400).send({
-        message: "Dados inválidos",
-        errors: formatError(bodyResult),
-      });
-    }
-
-    const productId = paramsResult.data.id;
-    const data = bodyResult.data;
-
-    const product = await productService.updateProduct(productId, data);
-
-    return reply.status(200).send(product);
-  },
-
-  async delete(
-    request: FastifyRequest<{ Params: ParamsWithId }>,
-    reply: FastifyReply,
-  ) {
-    const result = paramsWithIdSchema.safeParse(request.params);
-
-    if (!result.success) {
-      return reply.status(400).send({
-        message: "ID inválido",
-        errors: formatError(result),
-      });
-    }
-
-    const productId = result.data.id;
-    const user = await productService.delete(productId);
-
-    return reply.send(user);
   },
 };
