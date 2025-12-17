@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { userRoutes } from "./domains/user/user_routes";
 import { authRoutes } from "./domains/auth/auth_routes";
 import { productRoutes } from "./domains/product/product_routes";
+import { stockRoutes } from "./domains/stock/stock_routes";
 const app = Fastify({ logger: true });
 
 app.register(cors, {
@@ -15,6 +16,7 @@ app.register(cors, {
 app.register(authRoutes);
 app.register(userRoutes);
 app.register(productRoutes);
+app.register(stockRoutes);
 
 const start = async () => {
   try {
