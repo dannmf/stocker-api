@@ -44,6 +44,7 @@ model StockMovement {
   productId Int
   quantity  Int
   type      StockMovementType
+  reason    String?
   createdAt DateTime          @default(now())
 
   product Product @relation(fields: [productId], references: [id])
@@ -54,6 +55,7 @@ enum StockMovementType {
   INITIAL
   IN
   OUT
+  ADJUSTMENT
 }
 
 model InvalidToken {
