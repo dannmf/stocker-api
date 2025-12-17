@@ -31,7 +31,17 @@ export const productController = {
         });
       }
 
-      const product = await productService.createProduct(result.data);
+      if (!request.user) {
+        return reply.status(401).send({
+          message: "Usuário não autenticado",
+        });
+      }
+
+      const userId = Number(request.user.id);
+      const product = await productService.createProduct({
+        ...result.data,
+        userId,
+      });
       return reply.status(201).send(product);
     } catch (error) {
       if (error instanceof Error) {

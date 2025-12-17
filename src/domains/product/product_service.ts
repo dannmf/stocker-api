@@ -9,6 +9,7 @@ export class ProductService {
     stock: number;
     category: string;
     imageUrl: string;
+    userId: number;
   }) {
     const existingProduct = await prisma.product.findUnique({
       where: {
@@ -20,30 +21,48 @@ export class ProductService {
       throw new Error("Produto já existe");
     }
 
-    const product = await prisma.product.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        minStock: data.minStock,
-        stock: data.stock,
-        category: data.category,
-        imageUrl: data.imageUrl,
-      },
+    return await prisma.$transaction(async (tx) => {
+      const product = await tx.product.create({
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          minStock: data.minStock,
+          stock: data.stock,
+          category: data.category,
+          imageUrl: data.imageUrl,
+          userId: data.userId,
+        },
 
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        minStock: true,
-        stock: true,
-        category: true,
-        imageUrl: true,
-      },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          minStock: true,
+          stock: true,
+          category: true,
+          imageUrl: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      await tx.stockMovement.create({
+        data: {
+          productId: product.id,
+          quantity: data.stock,
+          type: "INITIAL",
+          userId: data.userId,
+        },
+      });
+
+      return product;
     });
-
-    return product;
   }
 
   async findAll() {
@@ -80,6 +99,12 @@ export class ProductService {
         stock: true,
         category: true,
         imageUrl: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -215,7 +240,6 @@ export class ProductService {
       description?: string;
       price?: number;
       minStock?: number;
-      stock?: number;
       category?: string;
       imageUrl?: string;
     },
@@ -235,7 +259,6 @@ export class ProductService {
         description: data.description,
         price: data.price,
         minStock: data.minStock,
-        stock: data.stock,
         category: data.category,
         imageUrl: data.imageUrl,
       },
@@ -244,8 +267,8 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
-        minStock: true,
         stock: true,
+        minStock: true,
         category: true,
         imageUrl: true,
       },
