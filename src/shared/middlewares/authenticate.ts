@@ -36,6 +36,12 @@ export async function authenticate(
 
     request.user = { id: decoded.id };
   } catch (error) {
+    if (error instanceof Error) {
+      return reply.status(401).send({
+        message: "Erro de autenticação",
+        error: error.message,
+      });
+    }
     return reply.status(401).send({ message: "Erro de autenticação" });
   }
 }

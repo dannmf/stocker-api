@@ -17,11 +17,13 @@ model User {
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  products  Product[]
   stockMovements StockMovement[]
 }
 
 model Product {
   id          Int             @id @default(autoincrement())
+  userId      Int
   name        String          @unique
   description String
   category    String
@@ -32,6 +34,8 @@ model Product {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   movements   StockMovement[]
+
+  createdBy   User            @relation(fields: [userId], references: [id])
 }
 
 model StockMovement {
@@ -40,6 +44,7 @@ model StockMovement {
   productId Int
   quantity  Int
   type      StockMovementType
+  reason    String?
   createdAt DateTime          @default(now())
 
   product Product @relation(fields: [productId], references: [id])
@@ -47,8 +52,10 @@ model StockMovement {
 }
 
 enum StockMovementType {
+  INITIAL
   IN
   OUT
+  ADJUSTMENT
 }
 
 model InvalidToken {

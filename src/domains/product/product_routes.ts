@@ -18,11 +18,6 @@ export async function productRoutes(fastify: FastifyInstance) {
     handler: productController.getQuantity,
   });
 
-  fastify.get("/product/lowStock", {
-    preHandler: authenticate,
-    handler: productController.getLowStock,
-  });
-
   fastify.get("/product/:id", {
     preHandler: authenticate,
     handler: productController.getById,
@@ -36,15 +31,6 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.get("/product/period/:startDate/:endDate", {
     preHandler: authenticate,
     handler: productController.getByPeriod,
-  });
-
-  fastify.post("/product/addStock/:id", {
-    preHandler: authenticate,
-    handler: productController.addProductStock,
-  });
-  fastify.post("/product/removeStock/:id", {
-    preHandler: authenticate,
-    handler: productController.removeProductStock,
   });
 
   fastify.put("/product/:id", {

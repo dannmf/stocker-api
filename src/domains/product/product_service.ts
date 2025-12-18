@@ -9,6 +9,7 @@ export class ProductService {
     stock: number;
     category: string;
     imageUrl: string;
+    userId: number;
   }) {
     const existingProduct = await prisma.product.findUnique({
       where: {
@@ -20,30 +21,104 @@ export class ProductService {
       throw new Error("Produto já existe");
     }
 
-    const product = await prisma.product.create({
+    return await prisma.$transaction(async (tx) => {
+      const product = await tx.product.create({
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          minStock: data.minStock,
+          stock: data.stock,
+          category: data.category,
+          imageUrl: data.imageUrl,
+          userId: data.userId,
+        },
+
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          minStock: true,
+          stock: true,
+          category: true,
+          imageUrl: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      await tx.stockMovement.create({
+        data: {
+          productId: product.id,
+          quantity: data.stock,
+          type: "INITIAL",
+          userId: data.userId,
+        },
+      });
+
+      return product;
+    });
+  }
+  async updateProduct(
+    id: number,
+    data: {
+      name?: string;
+      description?: string;
+      price?: number;
+      minStock?: number;
+      category?: string;
+      imageUrl?: string;
+    },
+  ) {
+    const productId = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!productId) {
+      throw new Error("Produto não encontrado");
+    }
+
+    const product = await prisma.product.update({
+      where: { id },
       data: {
         name: data.name,
         description: data.description,
         price: data.price,
         minStock: data.minStock,
-        stock: data.stock,
         category: data.category,
         imageUrl: data.imageUrl,
       },
-
       select: {
         id: true,
         name: true,
         description: true,
         price: true,
-        minStock: true,
         stock: true,
+        minStock: true,
         category: true,
         imageUrl: true,
       },
     });
-
     return product;
+  }
+
+  async delete(id: number) {
+    const productId = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!productId) {
+      throw new Error("Produto não encontrado");
+    }
+
+    await prisma.product.delete({
+      where: { id },
+    });
   }
 
   async findAll() {
@@ -80,6 +155,12 @@ export class ProductService {
         stock: true,
         category: true,
         imageUrl: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -93,79 +174,6 @@ export class ProductService {
   async countProducts() {
     const count = await prisma.product.count();
     return count;
-  }
-
-  async findLowStockProducts() {
-    const products = await prisma.product.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        minStock: true,
-        stock: true,
-        category: true,
-        imageUrl: true,
-      },
-    });
-
-    return products.filter((product) => product.stock <= product.minStock);
-  }
-
-  async addStock(id: number, quantity: number, userId: number) {
-    return await prisma.$transaction(async (tx) => {
-      const product = await prisma.product.findUnique({
-        where: { id },
-      });
-
-      if (!product) {
-        throw new Error("Produto não encontrado");
-      }
-      await tx.stockMovement.create({
-        data: {
-          productId: id,
-          quantity,
-          type: "IN",
-          userId,
-        },
-      });
-      return await tx.product.update({
-        where: { id },
-        data: {
-          stock: product.stock + quantity,
-        },
-      });
-    });
-  }
-
-  async removeStock(id: number, quantity: number, userId: number) {
-    return await prisma.$transaction(async (tx) => {
-      const product = await prisma.product.findUnique({
-        where: { id },
-      });
-
-      if (!product) {
-        throw new Error("Produto não encontrado");
-      }
-
-      if (product.stock < quantity) {
-        throw new Error("Estoque insuficiente");
-      }
-      await tx.stockMovement.create({
-        data: {
-          productId: id,
-          quantity,
-          type: "OUT",
-          userId,
-        },
-      });
-      return await tx.product.update({
-        where: { id },
-        data: {
-          stock: product.stock - quantity,
-        },
-      });
-    });
   }
 
   async findByCategory(category: string) {
@@ -206,64 +214,5 @@ export class ProductService {
       },
     });
     return products;
-  }
-
-  async updateProduct(
-    id: number,
-    data: {
-      name?: string;
-      description?: string;
-      price?: number;
-      minStock?: number;
-      stock?: number;
-      category?: string;
-      imageUrl?: string;
-    },
-  ) {
-    const productId = await prisma.product.findUnique({
-      where: { id },
-    });
-
-    if (!productId) {
-      throw new Error("Produto não encontrado");
-    }
-
-    const product = await prisma.product.update({
-      where: { id },
-      data: {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        minStock: data.minStock,
-        stock: data.stock,
-        category: data.category,
-        imageUrl: data.imageUrl,
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        minStock: true,
-        stock: true,
-        category: true,
-        imageUrl: true,
-      },
-    });
-    return product;
-  }
-
-  async delete(id: number) {
-    const productId = await prisma.product.findUnique({
-      where: { id },
-    });
-
-    if (!productId) {
-      throw new Error("Produto não encontrado");
-    }
-
-    await prisma.product.delete({
-      where: { id },
-    });
   }
 }

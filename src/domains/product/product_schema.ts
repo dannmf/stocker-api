@@ -56,11 +56,6 @@ const updateProductBodySchema = z
       .min(1, "O estoque mínimo deve ser maior que zero")
       .nonnegative("O estoque não deve ter um valor negativo")
       .optional(),
-    stock: z
-      .number()
-      .int()
-      .nonnegative("O estoque deve ser um número inteiro não negativo")
-      .optional(),
     category: z.string().min(1, "A categoria é obrigatória").optional(),
     imageUrl: z.string().optional(),
   })
