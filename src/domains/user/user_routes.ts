@@ -1,6 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { usersController } from "./user_controller";
 import { authenticate } from "../../shared/middlewares/authenticate";
+import { authorize } from "@/shared/middlewares/authorization";
+import { UserRole } from "@prisma/client";
 
 export async function userRoutes(fastify: FastifyInstance) {
   fastify.post("/user", usersController.create);
@@ -24,6 +26,11 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.put("/user/password/:id", {
     preHandler: authenticate,
     handler: usersController.updatePassword,
+  });
+
+  fastify.patch("/user/role/:id", {
+    preHandler: [authenticate, authorize([UserRole.ADMIN])],
+    handler: usersController.updateRole,
   });
 
   fastify.delete("/user/:id", {
