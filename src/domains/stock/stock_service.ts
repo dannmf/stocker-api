@@ -167,7 +167,7 @@ export class StockService {
           select: { id: true, name: true, email: true },
         },
         product: {
-          select: { id: true, name: true, category: true },
+          select: { id: true, name: true, category: true, price: true },
         },
       },
       orderBy: { createdAt: "desc" },
