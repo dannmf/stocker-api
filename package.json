@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.21",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "prisma": "^7.1.0",
     "tsx": "^4.19.4",
     "txs": "^1.0.0",
