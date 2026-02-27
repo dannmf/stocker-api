@@ -22,7 +22,7 @@ export class AuthService {
       throw new Error("Senha inválida");
     }
 
-    const token = signToken({ id: user.id });
+    const token = signToken({ id: user.id, role: user.role });
     return { user, token };
   }
 
