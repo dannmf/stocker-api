@@ -1,5 +1,6 @@
 import { compare, hash } from "bcryptjs";
 import { prisma } from "../../shared/lib/prisma";
+import { UserRole } from "@prisma/client";
 
 export class UserService {
   async createUser(data: {
@@ -7,6 +8,7 @@ export class UserService {
     email: string;
     password: string;
     imageUrl?: string;
+    role?: UserRole;
   }) {
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -26,12 +28,14 @@ export class UserService {
         email: data.email,
         imageUrl: data.imageUrl,
         password: hashedPassword,
+        role: data.role,
       },
 
       select: {
         id: true,
         name: true,
         email: true,
+        role: true,
         imageUrl: true,
         createdAt: true,
         updatedAt: true,
@@ -46,6 +50,7 @@ export class UserService {
         name: true,
         email: true,
         imageUrl: true,
+        role: true,
         password: false,
       },
       orderBy: {
@@ -116,6 +121,15 @@ export class UserService {
       },
     });
 
+    return user;
+  }
+
+  async updateRole(id: number, role: UserRole) {
+    const user = await prisma.user.update({
+      where: { id },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
     return user;
   }
 

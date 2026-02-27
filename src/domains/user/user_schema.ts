@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { z } from "zod";
 
 const paramsWithIdSchema = z.object({
@@ -15,6 +16,7 @@ const createUserBodySchema = z.object({
   email: z.string().email(),
   imageUrl: z.string().optional(),
   password: z.string().min(6, "A senha deve conter no mínimo 6 caracteres"),
+  role: z.nativeEnum(UserRole).optional(),
 });
 
 const updateUserSchema = z
@@ -26,6 +28,10 @@ const updateUserSchema = z
   .refine((data) => Object.keys(data).length > 0, {
     message: "Pelo menos um campo deve ser fornecido para atualização",
   });
+
+const updateUserRoleSchema = z.object({
+  role: z.nativeEnum(UserRole),
+});
 
 const updateUserPasswordSchema = z.object({
   currentPassword: z
@@ -41,14 +47,17 @@ type ParamsWithId = z.infer<typeof paramsWithIdSchema>;
 type CreateUserBody = z.infer<typeof createUserBodySchema>;
 type UpdateUserBody = z.infer<typeof updateUserSchema>;
 type UpdatePasswordBody = z.infer<typeof updateUserPasswordSchema>;
+type UpdateUserRoleBody = z.infer<typeof updateUserRoleSchema>;
 
 export {
   paramsWithIdSchema,
   createUserBodySchema,
   updateUserSchema,
   updateUserPasswordSchema,
+  updateUserRoleSchema,
   ParamsWithId,
   CreateUserBody,
   UpdateUserBody,
   UpdatePasswordBody,
+  UpdateUserRoleBody,
 };

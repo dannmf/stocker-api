@@ -9,6 +9,8 @@ import {
   UpdatePasswordBody,
   UpdateUserBody,
   updateUserPasswordSchema,
+  UpdateUserRoleBody,
+  updateUserRoleSchema,
   updateUserSchema,
 } from "./user_schema";
 
@@ -109,6 +111,33 @@ export const usersController = {
       }
       return reply.status(500).send({ message: "Erro interno do servidor" });
     }
+  },
+
+  async updateRole(
+    request: FastifyRequest<{ Params: ParamsWithId; Body: UpdateUserRoleBody }>,
+    reply: FastifyReply,
+  ) {
+    const paramsResult = paramsWithIdSchema.safeParse(request.params);
+
+    if (!paramsResult.success) {
+      return reply.status(400).send({
+        message: "Id inválido",
+      });
+    }
+    const bodyResult = updateUserRoleSchema.safeParse(request.body);
+    if (!bodyResult.success) {
+      return reply.status(400).send({
+        message: "Dados inválidos",
+        errors: formatError(bodyResult),
+      });
+    }
+
+    const user = await userService.updateRole(
+      paramsResult.data.id,
+      bodyResult.data.role,
+    );
+
+    return reply.send(user);
   },
 
   async updatePassword(
