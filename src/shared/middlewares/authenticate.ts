@@ -34,7 +34,7 @@ export async function authenticate(
       return reply.status(401).send({ message: "Token inválido" });
     }
 
-    request.user = { id: decoded.id };
+    request.user = { id: decoded.id, role: decoded.role };
   } catch (error) {
     if (error instanceof Error) {
       return reply.status(401).send({

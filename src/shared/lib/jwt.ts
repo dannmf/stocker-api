@@ -1,4 +1,5 @@
 // src/lib/jwt.ts
+import { UserRole } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
 // Certifique-se de que JWT_SECRET está definido no ambiente
@@ -10,7 +11,7 @@ if (!JWT_SECRET) {
 }
 const JWT_EXPIRES_IN = "1d";
 
-export function signToken(payload: object): string {
+export function signToken(payload: { id: number; role: UserRole }): string {
   return jwt.sign(payload, JWT_SECRET!, {
     expiresIn: JWT_EXPIRES_IN,
   });
